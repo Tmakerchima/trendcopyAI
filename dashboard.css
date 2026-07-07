@@ -93,49 +93,10 @@ h1 {
   box-shadow: var(--shadow);
 }
 
-.mode-tabs {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-  margin-bottom: 18px;
-  padding: 4px;
-  background: #f1eadf;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-}
-
-.mode-tab {
-  min-height: 38px;
-  color: var(--muted);
-  background: transparent;
-  border: 0;
-  border-radius: 7px;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.mode-tab.active {
-  color: var(--ink);
-  background: var(--paper);
-  box-shadow: 0 1px 4px rgba(55, 43, 31, 0.08);
-}
-
 .email-form,
 .code-form {
   display: grid;
   gap: 12px;
-}
-
-.email-form label,
-.code-form label {
-  display: grid;
-  gap: 7px;
-}
-
-.email-form span,
-.code-form span {
-  color: var(--muted);
-  font-size: 13px;
 }
 
 .email-form input,
@@ -185,7 +146,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 18px 0;
+  margin: 18px 0 16px;
   color: var(--muted);
   font-size: 12px;
 }

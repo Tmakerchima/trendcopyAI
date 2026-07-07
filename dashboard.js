@@ -7,9 +7,6 @@ const emailInput = document.querySelector("#email");
 const codeInput = document.querySelector("#code");
 const sendCodeButton = document.querySelector("#send-code-button");
 const changeEmailButton = document.querySelector("#change-email-button");
-const tabs = document.querySelectorAll(".mode-tab");
-
-let mode = params.get("mode") === "register" ? "register" : "login";
 
 function showError(message) {
   if (!errorBox) return;
@@ -23,14 +20,6 @@ function showSuccess(message) {
   successBox.textContent = message;
   successBox.hidden = !message;
   if (errorBox) errorBox.hidden = true;
-}
-
-function setMode(nextMode) {
-  mode = nextMode === "register" ? "register" : "login";
-  tabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.mode === mode));
-  sendCodeButton.textContent = mode === "register" ? "注册并发送验证码" : "发送登录验证码";
-  showError("");
-  showSuccess("");
 }
 
 async function postJson(url, body) {
@@ -51,10 +40,6 @@ if (errorBox && params.get("login") === "failed") {
   showError(reason ? `Login failed: ${reason}` : "Login failed. Please try again.");
 }
 
-tabs.forEach((tab) => {
-  tab.addEventListener("click", () => setMode(tab.dataset.mode));
-});
-
 emailForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const email = emailInput.value.trim();
@@ -62,9 +47,9 @@ emailForm.addEventListener("submit", async (event) => {
 
   sendCodeButton.disabled = true;
   const originalText = sendCodeButton.textContent;
-  sendCodeButton.textContent = "发送中...";
+  sendCodeButton.textContent = "Sending...";
   try {
-    const result = await postJson("/api/auth/email/request-code", { email, purpose: mode });
+    const result = await postJson("/api/auth/email/request-code", { email, purpose: "login" });
     emailForm.hidden = true;
     codeForm.hidden = false;
     codeInput.value = "";
@@ -89,7 +74,7 @@ codeForm.addEventListener("submit", async (event) => {
   const originalText = button.textContent;
   button.textContent = "验证中...";
   try {
-    await postJson("/api/auth/email/verify", { email, code, purpose: mode });
+    await postJson("/api/auth/email/verify", { email, code, purpose: "login" });
     window.location.href = "/?login=success&provider=email";
   } catch (error) {
     showError(error.message);
@@ -107,5 +92,3 @@ changeEmailButton.addEventListener("click", () => {
   showError("");
   showSuccess("");
 });
-
-setMode(mode);

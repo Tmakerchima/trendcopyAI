@@ -26,42 +26,33 @@
           <p class="login-error" id="login-error" hidden></p>
           <p class="login-success" id="login-success" hidden></p>
 
-          <div class="mode-tabs" role="tablist" aria-label="选择登录或注册">
-            <button class="mode-tab active" type="button" data-mode="login">登录</button>
-            <button class="mode-tab" type="button" data-mode="register">注册</button>
-          </div>
-
-          <form class="email-form" id="email-form">
-            <label>
-              <span>邮箱</span>
-              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
-            </label>
-            <button class="email-button" id="send-code-button" type="submit">发送验证码</button>
-          </form>
-
-          <form class="code-form" id="code-form" hidden>
-            <label>
-              <span>验证码</span>
-              <input id="code" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="输入 6 位验证码" required />
-            </label>
-            <button class="email-button" type="submit">继续</button>
-            <button class="text-button" id="change-email-button" type="button">更换邮箱</button>
-          </form>
-
-          <div class="divider"><span>或</span></div>
+          <a class="provider-button" href="/api/auth/google">
+            <span class="provider-icon google">G</span>
+            <span>Continue with Google</span>
+          </a>
 
           <a class="provider-button" href="/api/auth/qq">
             <span class="provider-icon qq">Q</span>
             <span>Continue with QQ</span>
           </a>
+
           <a class="provider-button" href="/api/auth/weixin">
             <span class="provider-icon wechat">W</span>
             <span>Continue with WeChat</span>
           </a>
-          <a class="provider-button" href="/api/auth/google">
-            <span class="provider-icon google">G</span>
-            <span>Continue with Google</span>
-          </a>
+
+          <div class="divider"><span>OR</span></div>
+
+          <form class="email-form" id="email-form">
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email" required />
+            <button class="email-button" id="send-code-button" type="submit">Continue with email</button>
+          </form>
+
+          <form class="code-form" id="code-form" hidden>
+            <input id="code" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Enter the 6-digit code" required />
+            <button class="email-button" type="submit">Continue</button>
+            <button class="text-button" id="change-email-button" type="button">更换邮箱</button>
+          </form>
 
           <p class="legal">By continuing, you agree to use TrendCopy AI to generate and manage creator content.</p>
         </div>
