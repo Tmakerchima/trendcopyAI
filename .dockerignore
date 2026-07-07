@@ -1,0 +1,10 @@
+.git/
+.tools/
+.vercel/
+.railway/
+backend/target/
+backend/config/
+node_modules/
+*.log
+.env
+.env.*
