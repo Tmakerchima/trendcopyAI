@@ -7,4 +7,5 @@ backend/target/
 target/
 .vercel/
 .railway/
+.tools/
 *.log
