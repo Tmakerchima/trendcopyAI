@@ -2,6 +2,8 @@ const params = new URLSearchParams(window.location.search);
 
 const errorBox = document.querySelector("#login-error");
 const successBox = document.querySelector("#login-success");
+const loginTitle = document.querySelector("#login-title");
+const loginSubtitle = document.querySelector("#login-subtitle");
 const emailStep = document.querySelector("#email-step");
 const emailForm = document.querySelector("#email-form");
 const codeForm = document.querySelector("#code-form");
@@ -37,9 +39,15 @@ function showSuccess(message) {
 }
 
 function showStep(step) {
+  document.body.dataset.authStep = step;
   emailStep.hidden = step !== "email";
   codeForm.hidden = step !== "code";
   passwordForm.hidden = step !== "password";
+}
+
+function setAuthCopy(title, subtitle) {
+  if (loginTitle) loginTitle.innerHTML = title;
+  if (loginSubtitle) loginSubtitle.textContent = subtitle;
 }
 
 function resetMessages() {
@@ -74,6 +82,10 @@ async function postJson(url, body) {
 function configurePasswordStep(mode) {
   state.mode = mode;
   const isRegister = mode === "register";
+  setAuthCopy(
+    isRegister ? "Create your<br />password" : "Enter your<br />password",
+    isRegister ? "Set a password to finish creating your account." : "Use your password to continue."
+  );
   passwordTitle.textContent = isRegister ? "Create your password" : "Enter your password";
   passwordCopy.textContent = isRegister
     ? `为 ${state.email} 设置一个至少 8 位的密码。`
@@ -89,6 +101,8 @@ if (errorBox && params.get("login") === "failed") {
   const reason = params.get("reason");
   showError(reason ? `Login failed: ${reason}` : "Login failed. Please try again.");
 }
+
+showStep("email");
 
 emailForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -108,6 +122,7 @@ emailForm.addEventListener("submit", async (event) => {
     codeCopy.textContent = `我们已向 ${email} 发送 6 位验证码。`;
     codeInput.value = "";
     showSuccess(result.message || "验证码已发送。");
+    setAuthCopy("Check your<br />email", "Enter the 6-digit code we sent to continue.");
     showStep("code");
     codeInput.focus();
   } catch (error) {
@@ -164,6 +179,7 @@ function backToEmail() {
   state.mode = "login";
   codeInput.value = "";
   passwordInput.value = "";
+  setAuthCopy("Think fast,<br />publish faster", "Turn fresh AI trends into posts your audience can read today.");
   showStep("email");
   resetMessages();
   emailInput.focus();
