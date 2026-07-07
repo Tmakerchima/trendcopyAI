@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录 - GameCopy AI</title>
+    <link rel="icon" href="./assets/logo-ai.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./dashboard.css" />
+  </head>
+  <body>
+    <header class="login-header">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="./assets/logo-ai.svg" alt="" />
+        <span>GameCopy AI</span>
+      </a>
+    </header>
+
+    <main class="login-page">
+      <section class="login-column" aria-labelledby="login-title">
+        <div class="login-copy">
+          <h1 id="login-title">Create faster,<br />publish smarter</h1>
+          <p>Generate better copy for your next game video.</p>
+        </div>
+
+        <div class="login-card" aria-label="选择登录方式">
+          <p class="login-error" id="login-error" hidden></p>
+          <a class="provider-button" href="/api/auth/qq">
+            <span class="provider-icon qq">Q</span>
+            <span>Continue with QQ</span>
+          </a>
+          <a class="provider-button" href="/api/auth/weixin">
+            <span class="provider-icon wechat">W</span>
+            <span>Continue with WeChat</span>
+          </a>
+          <a class="provider-button" href="/api/auth/google">
+            <span class="provider-icon google">G</span>
+            <span>Continue with Google</span>
+          </a>
+
+          <p class="legal">By continuing, you agree to use GameCopy AI to generate and manage creator content.</p>
+        </div>
+      </section>
+    </main>
+    <script src="./dashboard.js"></script>
+  </body>
+</html>

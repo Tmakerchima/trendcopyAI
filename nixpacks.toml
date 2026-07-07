@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["jdk21", "maven"]
+
+[phases.build]
+cmds = ["cd backend && mvn -DskipTests package"]
+
+[start]
+cmd = "java -jar backend/target/gamecopy-backend-0.2.0.jar"

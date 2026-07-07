@@ -1,0 +1,87 @@
+# TrendCopy AI
+
+TrendCopy AI turns public AI/product trends into publish-ready posts for Xiaohongshu, X/Twitter, and newsletters. The app has:
+
+- Static frontend pages at the project root.
+- A Spring Boot backend in `backend/`.
+- A Vercel API proxy in `api/[...path].js` so the frontend can call Railway through `/api/...`.
+
+## Local Development
+
+Local secrets live in `backend/config/application-local.yml`. This file is ignored by git.
+
+```powershell
+cd backend
+mvn spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+Open:
+
+```text
+http://localhost:8080
+```
+
+## Railway Backend
+
+Railway uses `nixpacks.toml` and `railway.json` from the repo root.
+
+Required Railway variables:
+
+```text
+QWEN_API_KEY=
+QWEN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+QWEN_MODEL=qwen-plus
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=https://YOUR_VERCEL_DOMAIN/api/auth/google/callback
+
+QQ_CLIENT_ID=
+QQ_CLIENT_SECRET=
+QQ_REDIRECT_URI=https://YOUR_VERCEL_DOMAIN/api/auth/qq/callback
+
+WEIXIN_CLIENT_ID=
+WEIXIN_CLIENT_SECRET=
+WEIXIN_REDIRECT_URI=https://YOUR_VERCEL_DOMAIN/api/auth/weixin/callback
+
+ALIPAY_GATEWAY_URL=https://openapi.alipay.com/gateway.do
+ALIPAY_APP_ID=
+ALIPAY_MERCHANT_PRIVATE_KEY=
+ALIPAY_PUBLIC_KEY=
+ALIPAY_RETURN_URL=https://YOUR_VERCEL_DOMAIN/pricing.html
+ALIPAY_NOTIFY_URL=https://YOUR_RAILWAY_DOMAIN/api/payments/alipay/notify
+
+FIRECRAWL_API_KEY=
+```
+
+## Vercel Frontend
+
+Vercel serves the static frontend and proxies `/api/...` to Railway.
+
+Required Vercel variable:
+
+```text
+BACKEND_URL=https://YOUR_RAILWAY_DOMAIN
+```
+
+The `/dashbord` and `/dashboard` routes rewrite to `dashboard.html`.
+
+## OAuth Callback Notes
+
+For Google, QQ, and WeChat, configure callback URLs to the Vercel domain:
+
+```text
+https://YOUR_VERCEL_DOMAIN/api/auth/google/callback
+https://YOUR_VERCEL_DOMAIN/api/auth/qq/callback
+https://YOUR_VERCEL_DOMAIN/api/auth/weixin/callback
+```
+
+This lets the browser keep the frontend-domain session cookie while Vercel proxies the callback to Railway.
+
+## Alipay Notes
+
+For computer website pay:
+
+- `ALIPAY_RETURN_URL` can point to the Vercel pricing page.
+- `ALIPAY_NOTIFY_URL` should point to the Railway backend notify endpoint.
+- Alipay cannot notify `localhost`; production payment callbacks require a public HTTPS URL.

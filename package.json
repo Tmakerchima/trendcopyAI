@@ -1,0 +1,12 @@
+{
+  "name": "gamecopy-ai-mvp",
+  "version": "0.2.0",
+  "private": true,
+  "description": "TrendCopy AI static frontend with a Vercel API proxy and Railway Spring Boot backend.",
+  "scripts": {
+    "check": "node --check app.js && node --check api/[...path].js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

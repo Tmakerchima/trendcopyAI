@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+        content="TrendCopy AI 自动检索公开热点，把真实来源变成小红书、X 和 newsletter 可发布内容。"
+    />
+    <title>TrendCopy AI - AI 趋势内容工厂</title>
+    <link rel="icon" href="./assets/logo-ai.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-left">
+        <a class="brand" href="#app" aria-label="TrendCopy AI 首页">
+          <img class="brand-mark" src="./assets/logo-ai.svg" alt="" />
+          <span>TrendCopy AI</span>
+        </a>
+      </div>
+      <nav class="top-nav" aria-label="主导航">
+        <a href="#app">生成器</a>
+        <a href="./sources.html">热点来源</a>
+        <a href="./pricing.html">价格</a>
+      </nav>
+      <div class="auth-menu" aria-label="登录">
+        <a class="login-button" id="auth-link" href="/dashbord">登录</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">AI trend content engine</p>
+          <h1 id="hero-title">把每天爆火的 AI 项目，变成今天就能发布的内容。</h1>
+          <p class="hero-text">
+            输入一个项目、产品发布、AI 新闻或趋势关键词，自动检索真实来源，生成小红书笔记、X 观点和 newsletter 摘要。
+            适合 AI 工具博主、独立开发者、科技内容创作者和想稳定输出热点内容的人。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-link" href="#app">生成今日内容</a>
+            <a class="secondary-link" href="./sources.html">查看热点来源</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace" id="app" aria-labelledby="app-title">
+        <div class="section-heading">
+          <p class="eyebrow">Generator</p>
+          <h2 id="app-title">AI 趋势内容生成器</h2>
+        </div>
+
+        <div class="app-grid">
+          <form class="generator-panel" id="generator-form">
+            <input type="hidden" id="game" name="game" value="自动检索" />
+            <input type="hidden" id="notes" name="notes" value="" />
+            <div class="form-row two-columns">
+              <label>
+                <span>发布平台</span>
+                <select id="platform" name="platform">
+                  <option value="小红书">小红书</option>
+                  <option value="X / Twitter">X / Twitter</option>
+                  <option value="Newsletter">Newsletter</option>
+                </select>
+              </label>
+              <label>
+                <span>内容风格</span>
+                <select id="style" name="style">
+                  <option value="小红书种草">小红书种草</option>
+                  <option value="问题解决">问题解决</option>
+                  <option value="清单收藏">清单收藏</option>
+                  <option value="避坑提醒">避坑提醒</option>
+                  <option value="趋势观察">趋势观察</option>
+                </select>
+              </label>
+            </div>
+
+            <label>
+              <span>项目、新闻或趋势</span>
+              <textarea
+                class="auto-grow"
+                id="topic"
+                name="topic"
+                maxlength="120"
+                rows="1"
+              >Zackriya-Solutions/meetily：本地 AI 会议记录和总结工具</textarea>
+            </label>
+
+            <label>
+              <span>受众 / 关键词</span>
+              <textarea
+                class="auto-grow"
+                id="keywords"
+                name="keywords"
+                maxlength="100"
+                rows="1"
+              >AI 工具、独立开发者、本地隐私、效率工具</textarea>
+            </label>
+
+            <div class="control-row">
+              <button class="generate-button" type="submit">生成内容</button>
+              <button class="ghost-button" type="button" id="reset-button">换一个趋势</button>
+            </div>
+          </form>
+
+          <aside class="preview-panel" aria-label="内容预览">
+            <div class="cover-preview">
+              <div class="cover-meta">
+                <span id="preview-game">GitHub Trending</span>
+                <span id="preview-platform">小红书</span>
+              </div>
+              <strong id="preview-cover">本地 AI 会议助手</strong>
+              <p id="preview-topic">从趋势项目到可发布内容</p>
+            </div>
+            <div class="quota-box">
+              <span>今日免费额度</span>
+              <strong><span id="quota-count">3</span> / 3</strong>
+              <p>免费额度用完后，可选择次数包或月卡继续生成。</p>
+            </div>
+            <div class="xhs-publish-panel">
+              <div class="xhs-panel-head">
+                <span>小红书预发布</span>
+                <button type="button" id="copy-xhs-post">复制全文</button>
+              </div>
+              <div class="xhs-preview-card">
+                <div class="xhs-cover" id="xhs-cover-preview">今天就能发</div>
+                <h3 id="xhs-title-preview">今天这个 GitHub Trending 项目，可能是 AI 的新机会</h3>
+                <p id="xhs-body-preview"></p>
+                <div class="xhs-tags" id="xhs-tags-preview"></div>
+              </div>
+              <div class="xhs-actions">
+                <button type="button" id="open-xhs-creator">打开小红书创作平台</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="results-grid" aria-live="polite">
+          <section class="result-block">
+            <div class="block-title">
+              <h3>内容选题</h3>
+              <button type="button" data-copy="titles">复制</button>
+            </div>
+            <ol id="titles"></ol>
+          </section>
+
+          <section class="result-block">
+            <div class="block-title">
+              <h3>标签</h3>
+              <button type="button" data-copy="tags">复制</button>
+            </div>
+            <ul id="tags" class="chip-list"></ul>
+          </section>
+
+          <section class="result-block">
+            <div class="block-title">
+              <h3>获取的文章路径</h3>
+              <button type="button" data-copy="sources">复制</button>
+            </div>
+            <div id="source-paths" class="source-paths"></div>
+          </section>
+
+          <section class="result-block">
+            <div class="block-title">
+              <h3>发布简介</h3>
+              <button type="button" data-copy="description">复制</button>
+            </div>
+            <p id="description" class="result-text"></p>
+          </section>
+
+          <section class="result-block wide">
+            <div class="block-title">
+              <h3>短视频 / 小红书正文</h3>
+              <button type="button" data-copy="script">复制</button>
+            </div>
+            <div id="script" class="script-lines"></div>
+          </section>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <p>本工具基于公开来源和用户输入生成内容，不替代事实核查。发布前请确认项目名称、数据和引用。</p>
+      <a href="#app">回到生成器</a>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>

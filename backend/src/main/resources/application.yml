@@ -1,0 +1,48 @@
+server:
+  port: ${PORT:8080}
+
+gamecopy:
+  qwen:
+    api-key: ${QWEN_API_KEY:}
+    base-url: ${QWEN_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+    model: ${QWEN_MODEL:qwen-plus}
+  alipay:
+    gateway-url: ${ALIPAY_GATEWAY_URL:https://openapi-sandbox.dl.alipaydev.com/gateway.do}
+    app-id: ${ALIPAY_APP_ID:}
+    merchant-private-key: ${ALIPAY_MERCHANT_PRIVATE_KEY:}
+    alipay-public-key: ${ALIPAY_PUBLIC_KEY:}
+    sign-type: ${ALIPAY_SIGN_TYPE:RSA2}
+    charset: UTF-8
+    return-url: ${ALIPAY_RETURN_URL:http://localhost:8080/#pricing}
+    notify-url: ${ALIPAY_NOTIFY_URL:}
+  oauth:
+    google:
+      client-id: ${GOOGLE_CLIENT_ID:}
+      client-secret: ${GOOGLE_CLIENT_SECRET:}
+      authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+      token-uri: https://oauth2.googleapis.com/token
+      scopes:
+        - openid
+        - email
+        - profile
+      redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/api/auth/google/callback}
+    weixin:
+      client-id: ${WEIXIN_CLIENT_ID:}
+      client-secret: ${WEIXIN_CLIENT_SECRET:}
+      authorization-uri: https://open.weixin.qq.com/connect/qrconnect
+      token-uri: https://api.weixin.qq.com/sns/oauth2/access_token
+      scopes:
+        - snsapi_login
+      redirect-uri: ${WEIXIN_REDIRECT_URI:http://localhost:8080/api/auth/weixin/callback}
+    qq:
+      client-id: ${QQ_CLIENT_ID:}
+      client-secret: ${QQ_CLIENT_SECRET:}
+      authorization-uri: https://graph.qq.com/oauth2.0/authorize
+      token-uri: https://graph.qq.com/oauth2.0/token
+      scopes:
+        - get_user_info
+      redirect-uri: ${QQ_REDIRECT_URI:http://localhost:8080/api/auth/qq/callback}
+
+firecrawl:
+  api-key: ${FIRECRAWL_API_KEY:}
+  base-url: ${FIRECRAWL_BASE_URL:https://api.firecrawl.dev/v2}

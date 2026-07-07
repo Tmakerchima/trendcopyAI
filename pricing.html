@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pricing - TrendCopy AI</title>
+    <link rel="icon" href="./assets/logo-ai.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-left">
+        <a class="brand" href="./index.html#app" aria-label="TrendCopy AI 首页">
+          <img class="brand-mark" src="./assets/logo-ai.svg" alt="" />
+          <span>TrendCopy AI</span>
+        </a>
+      </div>
+      <nav class="top-nav" aria-label="主导航">
+        <a href="./index.html#app">生成器</a>
+        <a href="./sources.html">热点来源</a>
+        <a href="./pricing.html">价格</a>
+      </nav>
+      <div class="auth-menu" aria-label="登录">
+        <a class="login-button" id="auth-link" href="/dashbord">登录</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="pricing standalone-page" id="pricing" aria-labelledby="pricing-title">
+        <div class="section-heading">
+          <p class="eyebrow">Pricing</p>
+          <h2 id="pricing-title">选择适合你的生成额度。</h2>
+        </div>
+        <div class="pricing-grid">
+          <article class="price-card">
+            <h3>免费</h3>
+            <strong>0 元</strong>
+            <p>每天 3 次生成，适合偶尔追热点或先体验效果。</p>
+            <a class="plan-button" href="./index.html#app">开始使用</a>
+          </article>
+          <article class="price-card">
+            <h3>轻量包</h3>
+            <strong>9.9 元</strong>
+            <p>100 次生成，不自动续费，适合稳定更新的内容创作者。</p>
+            <button class="plan-button" type="button" data-plan="starter_100">支付宝购买</button>
+          </article>
+          <article class="price-card">
+            <h3>月卡</h3>
+            <strong>29 元/月</strong>
+            <p>1000 次生成，适合每天追热点、多平台分发和批量改写。</p>
+            <button class="plan-button" type="button" data-plan="pro_monthly">开通月卡</button>
+          </article>
+        </div>
+      </section>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./pricing.js"></script>
+  </body>
+</html>
