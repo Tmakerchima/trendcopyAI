@@ -9,3 +9,6 @@ target/
 .railway/
 .tools/
 *.log
+
+.vercel
+.env*
