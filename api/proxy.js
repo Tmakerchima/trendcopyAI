@@ -35,12 +35,14 @@ function targetUrl(request) {
 }
 
 function copyRequestHeaders(headers) {
-  const copied = {};
-  for (const [key, value] of Object.entries(headers)) {
-    const normalized = key.toLowerCase();
-    if (!hopByHopHeaders.has(normalized) && normalized !== "host") {
-      copied[key] = value;
-    }
+  const copied = {
+    "user-agent": "TrendCopyAI-Vercel-Proxy/1.0",
+  };
+  if (headers["content-type"]) {
+    copied["content-type"] = headers["content-type"];
+  }
+  if (headers.cookie) {
+    copied.cookie = headers.cookie;
   }
   return copied;
 }
