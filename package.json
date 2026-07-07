@@ -4,7 +4,7 @@
   "private": true,
   "description": "TrendCopy AI static frontend with a Vercel API proxy and Railway Spring Boot backend.",
   "scripts": {
-    "check": "node --check app.js && node --check api/[...path].js"
+    "check": "node --check app.js && node --check api/proxy.js"
   },
   "engines": {
     "node": ">=18"

@@ -19,9 +19,19 @@ function backendBaseUrl() {
   return value.replace(/\/+$/, "");
 }
 
-function requestPath(request) {
+function normalizePath(value) {
+  if (Array.isArray(value)) {
+    return value.join("/");
+  }
+  return String(value || "").replace(/^\/+/, "");
+}
+
+function targetUrl(request) {
   const url = new URL(request.url, `https://${request.headers.host || "localhost"}`);
-  return `/api${url.pathname.replace(/^\/api/, "")}${url.search}`;
+  const proxiedPath = normalizePath(url.searchParams.get("path"));
+  url.searchParams.delete("path");
+  const suffix = url.searchParams.toString();
+  return `${backendBaseUrl()}/api/${proxiedPath}${suffix ? `?${suffix}` : ""}`;
 }
 
 function copyRequestHeaders(headers) {
@@ -46,9 +56,8 @@ function copyResponseHeaders(headers) {
 }
 
 export default async function handler(request, response) {
-  const targetUrl = `${backendBaseUrl()}${requestPath(request)}`;
   const hasBody = !["GET", "HEAD"].includes(request.method);
-  const upstream = await fetch(targetUrl, {
+  const upstream = await fetch(targetUrl(request), {
     method: request.method,
     headers: copyRequestHeaders(request.headers),
     body: hasBody ? request : undefined,
@@ -56,23 +65,17 @@ export default async function handler(request, response) {
     duplex: hasBody ? "half" : undefined,
   });
 
-  const headers = copyResponseHeaders(upstream.headers);
   response.status(upstream.status);
-  for (const [key, value] of Object.entries(headers)) {
+  for (const [key, value] of Object.entries(copyResponseHeaders(upstream.headers))) {
     response.setHeader(key, value);
   }
   if (typeof upstream.headers.getSetCookie === "function") {
     const cookies = upstream.headers.getSetCookie();
-    if (cookies.length) {
-      response.setHeader("set-cookie", cookies);
-    }
+    if (cookies.length) response.setHeader("set-cookie", cookies);
   } else {
     const cookie = upstream.headers.get("set-cookie");
-    if (cookie) {
-      response.setHeader("set-cookie", cookie);
-    }
+    if (cookie) response.setHeader("set-cookie", cookie);
   }
 
-  const body = Buffer.from(await upstream.arrayBuffer());
-  response.send(body);
+  response.send(Buffer.from(await upstream.arrayBuffer()));
 }
