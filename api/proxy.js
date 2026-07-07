@@ -55,14 +55,22 @@ function copyResponseHeaders(headers) {
   return copied;
 }
 
+async function readRequestBody(request) {
+  const chunks = [];
+  for await (const chunk of request) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+  return Buffer.concat(chunks);
+}
+
 export default async function handler(request, response) {
   const hasBody = !["GET", "HEAD"].includes(request.method);
+  const body = hasBody ? await readRequestBody(request) : undefined;
   const upstream = await fetch(targetUrl(request), {
     method: request.method,
     headers: copyRequestHeaders(request.headers),
-    body: hasBody ? request : undefined,
+    body,
     redirect: "manual",
-    duplex: hasBody ? "half" : undefined,
   });
 
   response.status(upstream.status);
