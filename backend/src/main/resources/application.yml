@@ -42,6 +42,15 @@ gamecopy:
       scopes:
         - get_user_info
       redirect-uri: ${QQ_REDIRECT_URI:http://localhost:8080/api/auth/qq/callback}
+  database:
+    url: ${SUPABASE_DB_URL:}
+    user: ${SUPABASE_DB_USER:}
+    password: ${SUPABASE_DB_PASSWORD:}
+  email-auth:
+    resend-api-key: ${RESEND_API_KEY:}
+    from: ${EMAIL_FROM:}
+    code-minutes: ${EMAIL_CODE_MINUTES:10}
+    app-url: ${APP_URL:http://localhost:8080}
 
 firecrawl:
   api-key: ${FIRECRAWL_API_KEY:}

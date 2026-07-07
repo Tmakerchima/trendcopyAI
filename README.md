@@ -58,6 +58,15 @@ ALIPAY_RETURN_URL=https://trendcopy-ai.vercel.app/pricing.html
 ALIPAY_NOTIFY_URL=https://trendcopy-api-production.up.railway.app/api/payments/alipay/notify
 
 FIRECRAWL_API_KEY=
+
+SUPABASE_DB_URL=
+SUPABASE_DB_USER=
+SUPABASE_DB_PASSWORD=
+
+RESEND_API_KEY=
+EMAIL_FROM=TrendCopy AI <login@your-domain.com>
+EMAIL_CODE_MINUTES=10
+APP_URL=https://trendcopy-ai.vercel.app
 ```
 
 ## Vercel Frontend
@@ -89,6 +98,32 @@ https://trendcopy-ai.vercel.app/api/auth/weixin/callback
 ```
 
 This lets the browser keep the frontend-domain session cookie while Vercel proxies the callback to Railway.
+
+## Email Login And Registration
+
+Email login uses one-time 6-digit codes:
+
+- `POST /api/auth/email/request-code`
+- `POST /api/auth/email/verify`
+
+Without `RESEND_API_KEY` and `EMAIL_FROM`, the backend prints the code in logs for development. With Resend configured, users receive the code by email.
+
+Supabase can be used as the relational database because Supabase is hosted Postgres. Set:
+
+```text
+SUPABASE_DB_URL=jdbc:postgresql://...
+SUPABASE_DB_USER=...
+SUPABASE_DB_PASSWORD=...
+```
+
+The backend creates these tables automatically if they do not exist:
+
+```sql
+users
+email_login_codes
+subscriptions
+usage_events
+```
 
 ## Alipay Notes
 

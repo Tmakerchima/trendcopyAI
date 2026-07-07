@@ -1,6 +1,8 @@
 package ai.gamecopy;
 
 import ai.gamecopy.config.AlipayProperties;
+import ai.gamecopy.config.DatabaseProperties;
+import ai.gamecopy.config.EmailAuthProperties;
 import ai.gamecopy.config.OAuthProperties;
 import ai.gamecopy.config.QwenProperties;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +13,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties({
     QwenProperties.class,
     AlipayProperties.class,
-    OAuthProperties.class
+    OAuthProperties.class,
+    DatabaseProperties.class,
+    EmailAuthProperties.class
 })
 public class GamecopyBackendApplication {
 

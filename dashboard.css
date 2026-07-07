@@ -93,6 +93,111 @@ h1 {
   box-shadow: var(--shadow);
 }
 
+.mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-bottom: 18px;
+  padding: 4px;
+  background: #f1eadf;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.mode-tab {
+  min-height: 38px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.mode-tab.active {
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 1px 4px rgba(55, 43, 31, 0.08);
+}
+
+.email-form,
+.code-form {
+  display: grid;
+  gap: 12px;
+}
+
+.email-form label,
+.code-form label {
+  display: grid;
+  gap: 7px;
+}
+
+.email-form span,
+.code-form span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.email-form input,
+.code-form input {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid #bbb2a5;
+  border-radius: 8px;
+  font: inherit;
+  outline: none;
+}
+
+.email-form input:focus,
+.code-form input:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(23, 19, 15, 0.1);
+}
+
+.email-button {
+  width: 100%;
+  min-height: 50px;
+  color: #fffdf8;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.email-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.text-button {
+  min-height: 34px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
 .provider-button {
   width: 100%;
   min-height: 50px;
@@ -117,6 +222,17 @@ h1 {
   color: #8d2718;
   background: #fff1eb;
   border: 1px solid #efc7b7;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.login-success {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  color: #1e5a35;
+  background: #eef8f0;
+  border: 1px solid #bee4c8;
   border-radius: 8px;
   font-size: 13px;
   line-height: 1.45;

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>登录 - GameCopy AI</title>
+    <title>登录 - TrendCopy AI</title>
     <link rel="icon" href="./assets/logo-ai.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./dashboard.css" />
   </head>
@@ -11,7 +11,7 @@
     <header class="login-header">
       <a class="brand" href="/">
         <img class="brand-mark" src="./assets/logo-ai.svg" alt="" />
-        <span>GameCopy AI</span>
+        <span>TrendCopy AI</span>
       </a>
     </header>
 
@@ -19,11 +19,37 @@
       <section class="login-column" aria-labelledby="login-title">
         <div class="login-copy">
           <h1 id="login-title">Create faster,<br />publish smarter</h1>
-          <p>Generate better copy for your next game video.</p>
+          <p>Turn fresh AI trends into posts your audience can read today.</p>
         </div>
 
-        <div class="login-card" aria-label="选择登录方式">
+        <div class="login-card" aria-label="登录或注册">
           <p class="login-error" id="login-error" hidden></p>
+          <p class="login-success" id="login-success" hidden></p>
+
+          <div class="mode-tabs" role="tablist" aria-label="选择登录或注册">
+            <button class="mode-tab active" type="button" data-mode="login">登录</button>
+            <button class="mode-tab" type="button" data-mode="register">注册</button>
+          </div>
+
+          <form class="email-form" id="email-form">
+            <label>
+              <span>邮箱</span>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+            </label>
+            <button class="email-button" id="send-code-button" type="submit">发送验证码</button>
+          </form>
+
+          <form class="code-form" id="code-form" hidden>
+            <label>
+              <span>验证码</span>
+              <input id="code" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="输入 6 位验证码" required />
+            </label>
+            <button class="email-button" type="submit">继续</button>
+            <button class="text-button" id="change-email-button" type="button">更换邮箱</button>
+          </form>
+
+          <div class="divider"><span>或</span></div>
+
           <a class="provider-button" href="/api/auth/qq">
             <span class="provider-icon qq">Q</span>
             <span>Continue with QQ</span>
@@ -37,7 +63,7 @@
             <span>Continue with Google</span>
           </a>
 
-          <p class="legal">By continuing, you agree to use GameCopy AI to generate and manage creator content.</p>
+          <p class="legal">By continuing, you agree to use TrendCopy AI to generate and manage creator content.</p>
         </div>
       </section>
     </main>

@@ -25,4 +25,13 @@ public record CurrentUser(
         avatarUrl == null ? "" : avatarUrl
     );
   }
+
+  public static CurrentUser fromAppUser(AppUser user) {
+    return authenticated(
+        user.authProvider(),
+        user.displayName(),
+        user.email(),
+        user.avatarUrl()
+    );
+  }
 }
