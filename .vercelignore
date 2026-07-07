@@ -1,0 +1,7 @@
+backend/target/
+backend/config/
+.tools/
+.railway/
+.git/
+node_modules/
+*.log
