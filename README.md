@@ -4,7 +4,7 @@ TrendCopy AI turns public AI/product trends into publish-ready posts for Xiaohon
 
 - Static frontend pages at the project root.
 - A Spring Boot backend in `backend/`.
-- A Vercel API proxy in `api/[...path].js` so the frontend can call Railway through `/api/...`.
+- A Vercel API proxy in `api/proxy.js` so the frontend can call Railway through `/api/...`.
 
 ## Local Development
 
@@ -23,7 +23,13 @@ http://localhost:8080
 
 ## Railway Backend
 
-Railway uses `nixpacks.toml` and `railway.json` from the repo root.
+Railway uses the root `Dockerfile` and `railway.json`.
+
+Production backend:
+
+```text
+https://trendcopy-api-production.up.railway.app
+```
 
 Required Railway variables:
 
@@ -34,22 +40,22 @@ QWEN_MODEL=qwen-plus
 
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI=https://YOUR_VERCEL_DOMAIN/api/auth/google/callback
+GOOGLE_REDIRECT_URI=https://trendcopy-ai.vercel.app/api/auth/google/callback
 
 QQ_CLIENT_ID=
 QQ_CLIENT_SECRET=
-QQ_REDIRECT_URI=https://YOUR_VERCEL_DOMAIN/api/auth/qq/callback
+QQ_REDIRECT_URI=https://trendcopy-ai.vercel.app/api/auth/qq/callback
 
 WEIXIN_CLIENT_ID=
 WEIXIN_CLIENT_SECRET=
-WEIXIN_REDIRECT_URI=https://YOUR_VERCEL_DOMAIN/api/auth/weixin/callback
+WEIXIN_REDIRECT_URI=https://trendcopy-ai.vercel.app/api/auth/weixin/callback
 
 ALIPAY_GATEWAY_URL=https://openapi.alipay.com/gateway.do
 ALIPAY_APP_ID=
 ALIPAY_MERCHANT_PRIVATE_KEY=
 ALIPAY_PUBLIC_KEY=
-ALIPAY_RETURN_URL=https://YOUR_VERCEL_DOMAIN/pricing.html
-ALIPAY_NOTIFY_URL=https://YOUR_RAILWAY_DOMAIN/api/payments/alipay/notify
+ALIPAY_RETURN_URL=https://trendcopy-ai.vercel.app/pricing.html
+ALIPAY_NOTIFY_URL=https://trendcopy-api-production.up.railway.app/api/payments/alipay/notify
 
 FIRECRAWL_API_KEY=
 ```
@@ -58,10 +64,16 @@ FIRECRAWL_API_KEY=
 
 Vercel serves the static frontend and proxies `/api/...` to Railway.
 
+Production frontend:
+
+```text
+https://trendcopy-ai.vercel.app
+```
+
 Required Vercel variable:
 
 ```text
-BACKEND_URL=https://YOUR_RAILWAY_DOMAIN
+BACKEND_URL=https://trendcopy-api-production.up.railway.app
 ```
 
 The `/dashbord` and `/dashboard` routes rewrite to `dashboard.html`.
@@ -71,9 +83,9 @@ The `/dashbord` and `/dashboard` routes rewrite to `dashboard.html`.
 For Google, QQ, and WeChat, configure callback URLs to the Vercel domain:
 
 ```text
-https://YOUR_VERCEL_DOMAIN/api/auth/google/callback
-https://YOUR_VERCEL_DOMAIN/api/auth/qq/callback
-https://YOUR_VERCEL_DOMAIN/api/auth/weixin/callback
+https://trendcopy-ai.vercel.app/api/auth/google/callback
+https://trendcopy-ai.vercel.app/api/auth/qq/callback
+https://trendcopy-ai.vercel.app/api/auth/weixin/callback
 ```
 
 This lets the browser keep the frontend-domain session cookie while Vercel proxies the callback to Railway.
