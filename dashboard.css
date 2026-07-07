@@ -1,11 +1,13 @@
 :root {
-  --bg: #f7f4ed;
-  --paper: #fffdf8;
-  --ink: #17130f;
-  --muted: #6f685f;
-  --line: #ddd5c8;
-  --accent: #c84f34;
-  --shadow: 0 18px 46px rgba(55, 43, 31, 0.12);
+  --bg: #f8f7f4;
+  --paper: #fffdf9;
+  --ink: #191613;
+  --muted: #6f6a63;
+  --line: #d9d5ce;
+  --blue: #82b7ff;
+  --blue-soft: #e6f1ff;
+  --blue-text: #0b63ce;
+  --shadow: 0 18px 54px rgba(44, 36, 26, 0.12);
 }
 
 * {
@@ -18,13 +20,18 @@ body {
   color: var(--ink);
   background: var(--bg);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Microsoft YaHei", sans-serif;
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
 }
 
 .login-header {
@@ -59,7 +66,7 @@ a {
 }
 
 .login-column {
-  width: min(100%, 460px);
+  width: min(100%, 520px);
 }
 
 .login-copy {
@@ -70,63 +77,111 @@ a {
 h1 {
   margin: 0 0 18px;
   font-family: Georgia, "Times New Roman", "Songti SC", serif;
-  font-size: clamp(44px, 6vw, 64px);
+  font-size: clamp(54px, 7vw, 72px);
   font-weight: 500;
-  line-height: 1.02;
+  line-height: 0.96;
   letter-spacing: 0;
 }
 
 .login-copy p {
-  max-width: 390px;
+  max-width: 450px;
   margin: 0 auto;
-  font-size: 18px;
-  line-height: 1.35;
-  color: var(--ink);
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: 21px;
+  line-height: 1.18;
+  color: #080605;
 }
 
-.login-card {
-  width: 100%;
-  padding: 28px;
-  background: rgba(255, 253, 248, 0.94);
-  border: 1px solid var(--line);
-  border-radius: 28px;
+.auth-shell {
+  overflow: hidden;
+  border: 1px solid var(--blue);
+  border-radius: 26px;
+  background: var(--blue-soft);
   box-shadow: var(--shadow);
 }
 
+.auth-banner {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--blue-text);
+  font-size: 14px;
+}
+
+.auth-banner span {
+  padding: 2px 9px;
+  background: #cfe4ff;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.login-card {
+  padding: 28px;
+  background: rgba(255, 253, 249, 0.98);
+  border-top: 1px solid var(--line);
+  border-radius: 26px 26px 0 0;
+}
+
+.auth-step,
 .email-form,
-.code-form {
+.code-form,
+.password-form {
   display: grid;
-  gap: 12px;
+  gap: 14px;
+}
+
+.auth-step h2 {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.step-copy {
+  margin: -4px 0 2px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
 }
 
 .email-form input,
-.code-form input {
+.code-form input,
+.password-form input {
   width: 100%;
-  min-height: 50px;
+  min-height: 52px;
   padding: 0 14px;
   color: var(--ink);
   background: var(--paper);
-  border: 1px solid #bbb2a5;
+  border: 1px solid #bbb7b0;
   border-radius: 8px;
-  font: inherit;
   outline: none;
+  font-size: 16px;
 }
 
 .email-form input:focus,
-.code-form input:focus {
+.code-form input:focus,
+.password-form input:focus {
   border-color: var(--ink);
-  box-shadow: 0 0 0 2px rgba(23, 19, 15, 0.1);
+  box-shadow: 0 0 0 2px rgba(25, 22, 19, 0.1);
+}
+
+.email-button,
+.provider-button {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 750;
 }
 
 .email-button {
-  width: 100%;
-  min-height: 50px;
-  color: #fffdf8;
+  color: var(--paper);
   background: var(--ink);
   border: 1px solid var(--ink);
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 800;
 }
 
 .email-button:disabled {
@@ -134,77 +189,22 @@ h1 {
   opacity: 0.72;
 }
 
-.text-button {
-  min-height: 34px;
-  color: var(--muted);
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 18px 0 16px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.divider::before,
-.divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--line);
-}
-
 .provider-button {
-  width: 100%;
-  min-height: 50px;
   display: grid;
   grid-template-columns: 34px 1fr 34px;
   align-items: center;
   padding: 0 16px;
   color: var(--ink);
   background: var(--paper);
-  border: 1px solid #bbb2a5;
-  border-radius: 8px;
-  font-weight: 700;
+  border: 1px solid #bbb7b0;
   transition:
     border-color 160ms ease,
     background 160ms ease,
     transform 160ms ease;
 }
 
-.login-error {
-  margin: 0 0 14px;
-  padding: 10px 12px;
-  color: #8d2718;
-  background: #fff1eb;
-  border: 1px solid #efc7b7;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.45;
-}
-
-.login-success {
-  margin: 0 0 14px;
-  padding: 10px 12px;
-  color: #1e5a35;
-  background: #eef8f0;
-  border: 1px solid #bee4c8;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.45;
-}
-
-.provider-button + .provider-button {
-  margin-top: 12px;
-}
-
 .provider-button:hover {
-  background: #f4eee3;
+  background: #f5f1ea;
   border-color: var(--ink);
   transform: translateY(-1px);
 }
@@ -219,27 +219,61 @@ h1 {
   height: 22px;
   place-items: center;
   border-radius: 50%;
+  color: #fff;
+  background: #4285f4;
   font-size: 12px;
   font-weight: 800;
 }
 
-.provider-icon.qq {
-  color: #fff;
-  background: #2b9cf0;
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 3px 0;
+  color: var(--ink);
+  font-size: 12px;
 }
 
-.provider-icon.wechat {
-  color: #fff;
-  background: #22a946;
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
 }
 
-.provider-icon.google {
-  color: #fff;
-  background: #4285f4;
+.text-button {
+  min-height: 32px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.login-error,
+.login-success {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.login-error {
+  color: #8d2718;
+  background: #fff1eb;
+  border: 1px solid #efc7b7;
+}
+
+.login-success {
+  color: #1e5a35;
+  background: #eef8f0;
+  border: 1px solid #bee4c8;
 }
 
 .legal {
-  margin: 16px 0 0;
+  margin: 14px 0 0;
   color: var(--muted);
   font-size: 12px;
   line-height: 1.55;
@@ -262,15 +296,14 @@ h1 {
   }
 
   h1 {
-    font-size: 39px;
+    font-size: 44px;
   }
 
   .login-copy p {
-    font-size: 16px;
+    font-size: 17px;
   }
 
   .login-card {
     padding: 20px;
-    border-radius: 20px;
   }
 }

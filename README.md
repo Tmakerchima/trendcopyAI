@@ -101,10 +101,13 @@ This lets the browser keep the frontend-domain session cookie while Vercel proxi
 
 ## Email Login And Registration
 
-Email login uses one-time 6-digit codes:
+Email auth uses a ChatGPT-style flow:
 
-- `POST /api/auth/email/request-code`
-- `POST /api/auth/email/verify`
+- `POST /api/auth/email/start` checks whether the email already exists.
+- New emails receive a one-time 6-digit registration code.
+- `POST /api/auth/email/verify-registration` verifies the registration code.
+- `POST /api/auth/email/set-password` creates the account password.
+- Existing emails use `POST /api/auth/email/password-login`.
 
 Without `RESEND_API_KEY` and `EMAIL_FROM`, the backend prints the code in logs for development. With Resend configured, users receive the code by email.
 

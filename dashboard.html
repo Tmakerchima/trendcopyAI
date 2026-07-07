@@ -18,43 +18,48 @@
     <main class="login-page">
       <section class="login-column" aria-labelledby="login-title">
         <div class="login-copy">
-          <h1 id="login-title">Create faster,<br />publish smarter</h1>
+          <h1 id="login-title">Think fast,<br />publish faster</h1>
           <p>Turn fresh AI trends into posts your audience can read today.</p>
         </div>
 
-        <div class="login-card" aria-label="登录或注册">
-          <p class="login-error" id="login-error" hidden></p>
-          <p class="login-success" id="login-success" hidden></p>
+        <div class="auth-shell" aria-label="登录或注册">
+          <div class="auth-banner"><span>New</span> AI trend posts, ready in one workflow</div>
+          <div class="login-card">
+            <p class="login-error" id="login-error" hidden></p>
+            <p class="login-success" id="login-success" hidden></p>
 
-          <a class="provider-button" href="/api/auth/google">
-            <span class="provider-icon google">G</span>
-            <span>Continue with Google</span>
-          </a>
+            <div class="auth-step" id="email-step">
+              <a class="provider-button" href="/api/auth/google">
+                <span class="provider-icon google">G</span>
+                <span>Continue with Google</span>
+              </a>
 
-          <a class="provider-button" href="/api/auth/qq">
-            <span class="provider-icon qq">Q</span>
-            <span>Continue with QQ</span>
-          </a>
+              <div class="divider"><span>OR</span></div>
 
-          <a class="provider-button" href="/api/auth/weixin">
-            <span class="provider-icon wechat">W</span>
-            <span>Continue with WeChat</span>
-          </a>
+              <form class="email-form" id="email-form">
+                <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email" required />
+                <button class="email-button" id="continue-email-button" type="submit">Continue with email</button>
+              </form>
+            </div>
 
-          <div class="divider"><span>OR</span></div>
+            <form class="auth-step code-form" id="code-form" hidden>
+              <h2>Check your email</h2>
+              <p class="step-copy" id="code-copy"></p>
+              <input id="code" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Enter the 6-digit code" required />
+              <button class="email-button" type="submit">Continue</button>
+              <button class="text-button" id="back-to-email-from-code" type="button">Use a different email</button>
+            </form>
 
-          <form class="email-form" id="email-form">
-            <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email" required />
-            <button class="email-button" id="send-code-button" type="submit">Continue with email</button>
-          </form>
+            <form class="auth-step password-form" id="password-form" hidden>
+              <h2 id="password-title">Enter your password</h2>
+              <p class="step-copy" id="password-copy"></p>
+              <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" placeholder="Password" required />
+              <button class="email-button" id="password-button" type="submit">Continue</button>
+              <button class="text-button" id="back-to-email-from-password" type="button">Use a different email</button>
+            </form>
 
-          <form class="code-form" id="code-form" hidden>
-            <input id="code" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Enter the 6-digit code" required />
-            <button class="email-button" type="submit">Continue</button>
-            <button class="text-button" id="change-email-button" type="button">更换邮箱</button>
-          </form>
-
-          <p class="legal">By continuing, you agree to use TrendCopy AI to generate and manage creator content.</p>
+            <p class="legal">By continuing, you agree to use TrendCopy AI to generate and manage creator content.</p>
+          </div>
         </div>
       </section>
     </main>

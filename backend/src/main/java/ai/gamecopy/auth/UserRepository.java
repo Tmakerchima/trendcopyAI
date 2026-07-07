@@ -18,6 +18,7 @@ public class UserRepository {
   private final DatabaseProperties properties;
   private final Map<String, AppUser> memoryUsers = new ConcurrentHashMap<>();
   private final Map<String, EmailCode> memoryCodes = new ConcurrentHashMap<>();
+  private final Map<String, String> memoryPasswordHashes = new ConcurrentHashMap<>();
   private volatile boolean initialized;
 
   public UserRepository(DatabaseProperties properties) {
@@ -84,6 +85,122 @@ public class UserRepository {
       }
     } catch (Exception error) {
       throw new IllegalStateException("Failed to load user.", error);
+    }
+  }
+
+  public boolean userExists(String email) {
+    return findByEmail(email).isPresent();
+  }
+
+  public Optional<String> passwordHashByEmail(String email) {
+    String normalizedEmail = normalize(email);
+    if (!databaseEnabled()) {
+      return Optional.ofNullable(memoryPasswordHashes.get(normalizedEmail)).filter(value -> !value.isBlank());
+    }
+
+    initSchema();
+    try (Connection connection = connection();
+        PreparedStatement statement = connection.prepareStatement("""
+            select password_hash
+            from users
+            where email = ?
+            """)) {
+      statement.setString(1, normalizedEmail);
+      try (ResultSet result = statement.executeQuery()) {
+        if (!result.next()) {
+          return Optional.empty();
+        }
+        return Optional.ofNullable(result.getString("password_hash")).filter(value -> !value.isBlank());
+      }
+    } catch (Exception error) {
+      throw new IllegalStateException("Failed to load password hash.", error);
+    }
+  }
+
+  public AppUser createVerifiedEmailUser(String email, String displayName, String passwordHash) {
+    String normalizedEmail = normalize(email);
+    if (!databaseEnabled()) {
+      AppUser existing = memoryUsers.get(normalizedEmail);
+      AppUser user = new AppUser(
+          existing == null ? UUID.randomUUID() : existing.id(),
+          normalizedEmail,
+          displayName,
+          "email",
+          existing == null ? "" : existing.avatarUrl(),
+          existing == null ? "free" : existing.plan(),
+          existing == null ? Instant.now() : existing.createdAt(),
+          Instant.now()
+      );
+      memoryUsers.put(normalizedEmail, user);
+      memoryPasswordHashes.put(normalizedEmail, passwordHash);
+      return user;
+    }
+
+    initSchema();
+    try (Connection connection = connection();
+        PreparedStatement statement = connection.prepareStatement("""
+            insert into users (email, display_name, auth_provider, avatar_url, plan, password_hash, email_verified, last_login_at)
+            values (?, ?, 'email', '', 'free', ?, true, now())
+            on conflict (email) do update set
+              display_name = excluded.display_name,
+              auth_provider = 'email',
+              password_hash = excluded.password_hash,
+              email_verified = true,
+              last_login_at = now()
+            returning id, email, display_name, auth_provider, avatar_url, plan, created_at, last_login_at
+            """)) {
+      statement.setString(1, normalizedEmail);
+      statement.setString(2, displayName);
+      statement.setString(3, passwordHash);
+      try (ResultSet result = statement.executeQuery()) {
+        result.next();
+        return mapUser(result);
+      }
+    } catch (Exception error) {
+      throw new IllegalStateException("Failed to create email user.", error);
+    }
+  }
+
+  public AppUser touchLogin(String email) {
+    String normalizedEmail = normalize(email);
+    if (!databaseEnabled()) {
+      AppUser existing = memoryUsers.get(normalizedEmail);
+      if (existing == null) {
+        throw new IllegalArgumentException("账号不存在。");
+      }
+      AppUser user = new AppUser(
+          existing.id(),
+          existing.email(),
+          existing.displayName(),
+          existing.authProvider(),
+          existing.avatarUrl(),
+          existing.plan(),
+          existing.createdAt(),
+          Instant.now()
+      );
+      memoryUsers.put(normalizedEmail, user);
+      return user;
+    }
+
+    initSchema();
+    try (Connection connection = connection();
+        PreparedStatement statement = connection.prepareStatement("""
+            update users
+            set last_login_at = now()
+            where email = ?
+            returning id, email, display_name, auth_provider, avatar_url, plan, created_at, last_login_at
+            """)) {
+      statement.setString(1, normalizedEmail);
+      try (ResultSet result = statement.executeQuery()) {
+        if (!result.next()) {
+          throw new IllegalArgumentException("账号不存在。");
+        }
+        return mapUser(result);
+      }
+    } catch (IllegalArgumentException error) {
+      throw error;
+    } catch (Exception error) {
+      throw new IllegalStateException("Failed to update login time.", error);
     }
   }
 
@@ -198,11 +315,15 @@ public class UserRepository {
               auth_provider text not null default 'email',
               provider_subject text not null default '',
               avatar_url text not null default '',
+              password_hash text not null default '',
+              email_verified boolean not null default false,
               plan text not null default 'free',
               created_at timestamptz not null default now(),
               last_login_at timestamptz not null default now()
             )
             """);
+        connection.createStatement().execute("alter table users add column if not exists password_hash text not null default ''");
+        connection.createStatement().execute("alter table users add column if not exists email_verified boolean not null default false");
         connection.createStatement().execute("""
             create table if not exists email_login_codes (
               id uuid primary key default gen_random_uuid(),
