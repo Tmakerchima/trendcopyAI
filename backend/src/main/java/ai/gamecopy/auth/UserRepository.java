@@ -11,10 +11,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
+  private static final Logger log = LoggerFactory.getLogger(UserRepository.class);
+
   private final DatabaseProperties properties;
   private final Map<String, AppUser> memoryUsers = new ConcurrentHashMap<>();
   private final Map<String, EmailCode> memoryCodes = new ConcurrentHashMap<>();
@@ -359,6 +363,7 @@ public class UserRepository {
             """);
         initialized = true;
       } catch (Exception error) {
+        log.error("Failed to initialize database schema: {}", rootMessage(error), error);
         throw new IllegalStateException("Failed to initialize database schema.", error);
       }
     }
@@ -390,5 +395,13 @@ public class UserRepository {
 
   private String normalize(String email) {
     return email == null ? "" : email.trim().toLowerCase();
+  }
+
+  private String rootMessage(Throwable error) {
+    Throwable current = error;
+    while (current.getCause() != null) {
+      current = current.getCause();
+    }
+    return current.getClass().getSimpleName() + ": " + current.getMessage();
   }
 }
