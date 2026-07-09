@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,6 +25,7 @@ public class UserRepository {
   private final Map<String, AppUser> memoryUsers = new ConcurrentHashMap<>();
   private final Map<String, EmailCode> memoryCodes = new ConcurrentHashMap<>();
   private final Map<String, String> memoryPasswordHashes = new ConcurrentHashMap<>();
+  private final Map<String, Integer> memoryUsageCounts = new ConcurrentHashMap<>();
   private volatile boolean initialized;
 
   public UserRepository(DatabaseProperties properties) {
@@ -94,6 +97,81 @@ public class UserRepository {
 
   public boolean userExists(String email) {
     return findByEmail(email).isPresent();
+  }
+
+  public int todayUsageCount(String email, String eventType) {
+    String normalizedEmail = normalize(email);
+    if (!databaseEnabled()) {
+      return memoryUsageCounts.getOrDefault(usageKey(normalizedEmail, eventType), 0);
+    }
+
+    initSchema();
+    try (Connection connection = connection();
+        PreparedStatement statement = connection.prepareStatement("""
+            select coalesce(sum(ue.quantity), 0) as used
+            from usage_events ue
+            join users u on u.id = ue.user_id
+            where u.email = ?
+              and ue.event_type = ?
+              and ue.created_at >= date_trunc('day', now())
+              and ue.created_at < date_trunc('day', now()) + interval '1 day'
+            """)) {
+      statement.setString(1, normalizedEmail);
+      statement.setString(2, eventType);
+      try (ResultSet result = statement.executeQuery()) {
+        result.next();
+        return result.getInt("used");
+      }
+    } catch (Exception error) {
+      throw new IllegalStateException("Failed to load usage.", error);
+    }
+  }
+
+  public void recordUsage(CurrentUser user, String eventType) {
+    String normalizedEmail = normalize(user == null ? "" : user.email());
+    if (normalizedEmail.isBlank()) {
+      throw new IllegalArgumentException("请先登录后再生成内容。");
+    }
+    if (!databaseEnabled()) {
+      memoryUsers.computeIfAbsent(normalizedEmail, email -> new AppUser(
+          UUID.randomUUID(),
+          email,
+          user.name(),
+          user.provider(),
+          user.avatarUrl(),
+          "free",
+          Instant.now(),
+          Instant.now()
+      ));
+      memoryUsageCounts.merge(usageKey(normalizedEmail, eventType), 1, Integer::sum);
+      return;
+    }
+
+    initSchema();
+    try (Connection connection = connection();
+        PreparedStatement statement = connection.prepareStatement("""
+            with upserted as (
+              insert into users (email, display_name, auth_provider, avatar_url, plan, last_login_at)
+              values (?, ?, ?, ?, 'free', now())
+              on conflict (email) do update set
+                display_name = excluded.display_name,
+                auth_provider = excluded.auth_provider,
+                avatar_url = excluded.avatar_url,
+                last_login_at = now()
+              returning id
+            )
+            insert into usage_events (user_id, event_type, quantity, metadata)
+            select id, ?, 1, '{}'::jsonb from upserted
+            """)) {
+      statement.setString(1, normalizedEmail);
+      statement.setString(2, user.name() == null || user.name().isBlank() ? normalizedEmail : user.name());
+      statement.setString(3, user.provider() == null || user.provider().isBlank() ? "unknown" : user.provider());
+      statement.setString(4, user.avatarUrl() == null ? "" : user.avatarUrl());
+      statement.setString(5, eventType);
+      statement.executeUpdate();
+    } catch (Exception error) {
+      throw new IllegalStateException("Failed to record usage.", error);
+    }
   }
 
   public Optional<String> passwordHashByEmail(String email) {
@@ -395,6 +473,10 @@ public class UserRepository {
 
   private String normalize(String email) {
     return email == null ? "" : email.trim().toLowerCase();
+  }
+
+  private String usageKey(String email, String eventType) {
+    return email + ":" + eventType + ":" + LocalDate.now(ZoneOffset.UTC);
   }
 
   private String rootMessage(Throwable error) {

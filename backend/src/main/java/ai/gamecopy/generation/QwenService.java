@@ -3,6 +3,7 @@ package ai.gamecopy.generation;
 import ai.gamecopy.config.QwenProperties;
 import ai.gamecopy.trends.TrendResearch;
 import ai.gamecopy.trends.TrendResearchService;
+import ai.gamecopy.usage.UsageStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -33,6 +34,10 @@ public class QwenService {
   }
 
   public GenerateResponse generate(GenerateRequest request) {
+    return generate(request, null);
+  }
+
+  public GenerateResponse generate(GenerateRequest request, UsageStatus usage) {
     if (properties.apiKey() == null || properties.apiKey().isBlank()) {
       throw new IllegalStateException("生成服务暂时不可用");
     }
@@ -57,7 +62,20 @@ public class QwenService {
         .body(JsonNode.class);
 
     String content = response.path("choices").path(0).path("message").path("content").asText();
-    return parseModelJson(content, research);
+    return withUsage(parseModelJson(content, research), usage);
+  }
+
+  public GenerateResponse withUsage(GenerateResponse response, UsageStatus usage) {
+    return new GenerateResponse(
+        response.titles(),
+        response.covers(),
+        response.description(),
+        response.tags(),
+        response.script(),
+        response.sources(),
+        response.imageUrl(),
+        usage
+    );
   }
 
   private String buildPrompt(GenerateRequest request, TrendResearch research) {
@@ -119,7 +137,8 @@ public class QwenService {
           toList(root.path("tags"), 12),
           toList(root.path("script"), 6),
           research.sources(),
-          research.imageUrl()
+          research.imageUrl(),
+          null
       );
     } catch (Exception error) {
       throw new IllegalStateException("生成结果解析失败");

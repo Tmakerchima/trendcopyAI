@@ -43,7 +43,9 @@ let quota = 3;
 let exampleIndex = 0;
 let latest = {};
 let currentValues = {};
+let currentUserAuthenticated = false;
 let currentUserPermanent = false;
+let currentUsage = null;
 let selectedTitleIndex = 0;
 let selectedHookIndex = 0;
 let selectedTagIndexes = new Set([0, 1, 2, 3, 4]);
@@ -121,7 +123,9 @@ async function generateCopy(values) {
 
   const payload = await response.json();
   if (!response.ok) {
-    throw new Error(payload.error || "生成服务当前不可用");
+    const error = new Error(payload.error || "生成服务当前不可用");
+    error.status = response.status;
+    throw error;
   }
   return payload;
 }
@@ -407,7 +411,31 @@ function updateQuota() {
     quotaCount.textContent = "∞";
     return;
   }
-  quotaCount.textContent = quota;
+  if (currentUsage) {
+    quota = currentUsage.remaining;
+    quotaCount.textContent = String(currentUsage.remaining);
+    return;
+  }
+  quota = currentUserAuthenticated ? 3 : 0;
+  quotaCount.textContent = String(quota);
+}
+
+function applyUsage(usage) {
+  if (!usage) return;
+  currentUsage = usage;
+  currentUserAuthenticated = Boolean(usage.authenticated);
+  currentUserPermanent = Boolean(usage.unlimited);
+  updateQuota();
+}
+
+async function refreshUsage() {
+  try {
+    const response = await fetch("/api/usage");
+    if (!response.ok) return;
+    applyUsage(await response.json());
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function updateStyleOptions(preferredValue = "") {
@@ -496,7 +524,9 @@ async function refreshCurrentUser() {
     const response = await fetch("/api/auth/me");
     const user = await response.json();
     if (!user.authenticated) {
+      currentUserAuthenticated = false;
       currentUserPermanent = false;
+      currentUsage = null;
       authLink.textContent = "登录";
       authLink.href = "/dashbord";
       authLink.classList.remove("signed-in");
@@ -507,6 +537,7 @@ async function refreshCurrentUser() {
     }
 
     const displayName = displayNameForUser(user);
+    currentUserAuthenticated = true;
     currentUserPermanent = Boolean(user.permanent);
     authLink.textContent = displayName;
     authLink.href = "#";
@@ -529,7 +560,7 @@ async function refreshCurrentUser() {
     document.addEventListener("click", (event) => {
       if (!document.querySelector(".auth-menu")?.contains(event.target)) menu.hidden = true;
     });
-    updateQuota();
+    await refreshUsage();
   } catch (error) {
     console.error(error);
   }
@@ -537,7 +568,12 @@ async function refreshCurrentUser() {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!currentUserPermanent && quota <= 0) {
+  if (!currentUserAuthenticated) {
+    showToast("请先登录后再生成内容");
+    window.location.href = "/dashbord";
+    return;
+  }
+  if (!currentUserPermanent && currentUsage && currentUsage.remaining <= 0) {
     showToast("今日免费次数已用完，请选择套餐继续生成");
     return;
   }
@@ -547,13 +583,14 @@ form.addEventListener("submit", async (event) => {
   generateButton.textContent = "生成中...";
   try {
     const copy = await generateCopy(values);
-    if (!currentUserPermanent) quota -= 1;
-    updateQuota();
+    applyUsage(copy.usage);
     render(copy, values);
     showToast("已生成内容");
   } catch (error) {
     console.error(error);
-    render(fallbackCopy(values), values);
+    if (![400, 401, 403].includes(error.status)) {
+      render(fallbackCopy(values), values);
+    }
     showToast(error.message || "生成服务当前不可用");
   } finally {
     generateButton.disabled = false;

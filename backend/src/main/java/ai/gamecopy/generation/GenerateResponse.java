@@ -1,6 +1,7 @@
 package ai.gamecopy.generation;
 
 import ai.gamecopy.trends.SourceReference;
+import ai.gamecopy.usage.UsageStatus;
 import java.util.List;
 
 public record GenerateResponse(
@@ -10,6 +11,7 @@ public record GenerateResponse(
     List<String> tags,
     List<String> script,
     List<SourceReference> sources,
-    String imageUrl
+    String imageUrl,
+    UsageStatus usage
 ) {
 }
