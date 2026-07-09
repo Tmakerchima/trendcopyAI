@@ -40,21 +40,13 @@ QWEN_MODEL=qwen-plus
 
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI=https://trendcopy-ai.vercel.app/api/auth/google/callback
-
-QQ_CLIENT_ID=
-QQ_CLIENT_SECRET=
-QQ_REDIRECT_URI=https://trendcopy-ai.vercel.app/api/auth/qq/callback
-
-WEIXIN_CLIENT_ID=
-WEIXIN_CLIENT_SECRET=
-WEIXIN_REDIRECT_URI=https://trendcopy-ai.vercel.app/api/auth/weixin/callback
+GOOGLE_REDIRECT_URI=https://trendcopy.asia/api/auth/google/callback
 
 ALIPAY_GATEWAY_URL=https://openapi.alipay.com/gateway.do
 ALIPAY_APP_ID=
 ALIPAY_MERCHANT_PRIVATE_KEY=
 ALIPAY_PUBLIC_KEY=
-ALIPAY_RETURN_URL=https://trendcopy-ai.vercel.app/pricing.html
+ALIPAY_RETURN_URL=https://trendcopy.asia/pricing.html
 ALIPAY_NOTIFY_URL=https://trendcopy-api-production.up.railway.app/api/payments/alipay/notify
 
 FIRECRAWL_API_KEY=
@@ -66,7 +58,7 @@ SUPABASE_DB_PASSWORD=
 RESEND_API_KEY=
 EMAIL_FROM=TrendCopy AI <login@your-domain.com>
 EMAIL_CODE_MINUTES=10
-APP_URL=https://trendcopy-ai.vercel.app
+APP_URL=https://trendcopy.asia
 ```
 
 ## Vercel Frontend
@@ -76,7 +68,7 @@ Vercel serves the static frontend and proxies `/api/...` to Railway.
 Production frontend:
 
 ```text
-https://trendcopy-ai.vercel.app
+https://trendcopy.asia
 ```
 
 Required Vercel variable:
@@ -89,12 +81,10 @@ The `/dashbord` and `/dashboard` routes rewrite to `dashboard.html`.
 
 ## OAuth Callback Notes
 
-For Google, QQ, and WeChat, configure callback URLs to the Vercel domain:
+For Google, configure the callback URL to the production domain:
 
 ```text
-https://trendcopy-ai.vercel.app/api/auth/google/callback
-https://trendcopy-ai.vercel.app/api/auth/qq/callback
-https://trendcopy-ai.vercel.app/api/auth/weixin/callback
+https://trendcopy.asia/api/auth/google/callback
 ```
 
 This lets the browser keep the frontend-domain session cookie while Vercel proxies the callback to Railway.
